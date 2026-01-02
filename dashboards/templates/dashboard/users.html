@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        {% include 'dashboard/sidebar.html' %}
+        <div class="col-md-9">
+            {% if perms.auth.view_user %}
+                <h2>All users</h2>
+                {% if perms.auth.delete_user %}
+                    <a href="{% url 'add_user' %}" class="btn btn-dark text-light float-right mb-2">Add new</a>
+                {% endif %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Full name</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Active</th>
+                            <th scope="col">Staff</th>
+                            <th scope="col">Superuser</th>
+                            {% if perms.auth.change_user or perms.auth.delete_user %}
+                                <th scope="col">Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.is_active %}
+                                        <i class="fa fa-check text-success"></i>
+                                    {% else %}
+                                        <i class="fa fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.is_staff %}
+                                        <i class="fa fa-check text-success"></i>
+                                    {% else %}
+                                        <i class="fa fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.is_superuser %}
+                                        <i class="fa fa-check text-success"></i>
+                                    {% else %}
+                                        <i class="fa fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                {% if perms.auth.change_user or perms.auth.delete_user %}
+                                    <td>
+                                        {% if perms.auth.change_user %}
+                                            <a href="{% url 'edit_user' user.id %}"><i class="fa fa-edit text-dark"></i></a>
+                                        {% endif %}
+                                        &nbsp;
+                                        {% if perms.auth.delete_user %}
+                                            <a href="{% url 'delete_user' user.id %}"><i class="fa fa-trash text-danger"></i></a>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h2>Access denied.</h2>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

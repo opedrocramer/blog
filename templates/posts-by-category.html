@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Category Posts -->
+    <h3 class="text-uppercase text-warning" style="letter-spacing: 2px;">Category - {{ category }}</h3>
+    <div class="row mb-2">
+        {% if posts %}
+        {% for post in posts %}
+            <div class="col-md-6">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <a class="text-dark" href="{% url 'articles' post.slug %}"><h3>{{ post }}</h3></a>
+                        <small class="mb-1 text-muted"><time datetime="{{ post.created_at }}">{{ post.created_at |
+                                timesince }} ago</time> | {{ post.author }}</small>
+                        <p class="card-text">{{ post.short_description | truncatewords:25 }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <p>No posts found.</p>
+        {% endif %}
+    </div>
+
+    </div><!-- /.row -->
+
+    </main><!-- /.container -->
+{% endblock %}
